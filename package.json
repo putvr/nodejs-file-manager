@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-file-manager",
+  "version": "1.0.0",
+  "description": "Another file manager",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/putvr/nodejs-file-manager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/putvr/nodejs-file-manager/issues"
+  },
+  "homepage": "https://github.com/putvr/nodejs-file-manager#readme"
+}
