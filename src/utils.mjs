@@ -3,6 +3,8 @@ export const parse = async (str) => {
 }
 
 export const execute = async ([cmd, ...args], config) => {
+    if (cmd === '.exit') process.emit('SIGINT');
+
     const cmdExecutor = config.commands[cmd];
     //console.log(config, cmd, cmdExecutor);
     if (!cmdExecutor) {
