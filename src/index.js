@@ -1,10 +1,11 @@
 import {parse, execute, exit} from "./utils.mjs";
 import {init} from './init.mjs';
 import fs from './fs.mjs';
+import * as os from './os.mjs' ;
 
-const DEBUG = true; // TODO: !!!!
+const DEBUG = false; // TODO: !!!!
 
-const commands = {...fs};
+const commands = {...fs, ...os};
 const config = {...init(process.argv), commands};
 
 process.stdin.on('data', async (chunk) => {
