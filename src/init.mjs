@@ -8,7 +8,7 @@ export const init = (argv) => {
         return acc;
     }, '');
 
-    username = username || 'User'; //TODO: remove at prod
+    //username = username || 'User'; //TODO: remove at prod
 
     const dir = homedir();
     const prompt = ' > ';

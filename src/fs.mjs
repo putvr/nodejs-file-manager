@@ -14,7 +14,7 @@ const up = (_, config) => {
 }
 
 const cd = ([newPath, _], config) => {
-    if (!newPath) return 'Invalid input';
+    if (!newPath) throw('Invalid input');
 
     newPath = path.join(config.dir, newPath)
 
@@ -29,19 +29,22 @@ const cd = ([newPath, _], config) => {
 const ls = (_, config) => {
     return fs.readdir(config.dir, {withFileTypes: true})
         .then((files) => {
-            const table = [];
+            // files = files.sort((a, b) => a.isDirectory() === b.isDirectory());
+            let table = [];
+
             files.forEach(file => {
                 table.push({
                     Name: file.name,
                     Type: (file.isDirectory() ? 'directory' : 'file')
                 });
             });
+            table.sort((a, b) => (a.Type).localeCompare(b.Type));
             console.table(table);
             return 'ls!';
         }).catch(() => 'Operation failed')
 }
 const cat = (args, config) => {
-    if (!args[0]) return 'Invalid input';
+    if (!args[0]) throw('Invalid input');
 
     return new Promise((resolve, reject) => {
         let data = '';
@@ -53,6 +56,7 @@ const cat = (args, config) => {
         })
 
         stream.on('end', () => {
+            console.log(data);
             return resolve(data);
         });
 
@@ -63,7 +67,7 @@ const cat = (args, config) => {
 }
 
 const add = async (args, config) => {
-    if (!args[0]) return 'Invalid input';
+    if (!args[0]) throw('Invalid input');
 
     const filename = config.dir + path.sep + args[0];
 
@@ -76,7 +80,7 @@ const add = async (args, config) => {
 }
 
 const rn = async (args, config) => {
-    if (!args[0] || !args[1]) return 'Invalid input';
+    if (!args[0] || !args[1]) throw('Invalid input');
 
     const oldPath = config.dir + path.sep + args[0];
     const newPath = config.dir + path.sep + args[1];
@@ -85,7 +89,7 @@ const rn = async (args, config) => {
 }
 
 const cp = async (args, config) => {
-    if (!args[0] || !args[1]) return 'Invalid input';
+    if (!args[0] || !args[1]) throw('Invalid input');
 
     return new Promise((resolve, reject) => {
         const oldPath = config.dir + path.sep + args[0];
@@ -118,7 +122,7 @@ const mv = async (args, config) => new Promise(async (resolve, reject) => {
 });
 
 const rm = async (args, config) => {
-    if (!args[0]) return 'Invalid input';
+    if (!args[0]) throw('Invalid input');
 
     const fileName = config.dir + path.sep + args[0];
 

@@ -1,7 +1,7 @@
 import * as nodeos from 'node:os';
 
 const os = async (args, _) => {
-    if (!args[0]) return 'Invalid input';
+    if (!args[0]) throw ('Invalid input');
 
     switch (args[0]) {
         case "--EOL":
@@ -24,7 +24,7 @@ const os = async (args, _) => {
             console.log(nodeos.arch());
             return 'architecture';
         default:
-            return 'os';
+            throw ('Invalid input');
     }
 }
 
