@@ -2,13 +2,13 @@ import {createReadStream, createWriteStream} from "node:fs";
 import zlib from 'node:zlib';
 import path from "node:path";
 
-const compress = async (args, config) => {
+const operation = (args, config, callback) => {
     if (!args[0] || !args[1]) throw 'Invalid input';
 
     return new Promise((resolve, reject) => {
 
-        const oldPath = config.dir + path.sep + args[0];
-        const newPath = config.dir + path.sep + args[1];
+        const oldPath = path.join(config.dir, args[0]);
+        const newPath = path.join(config.dir, args[1]);
 
         const inputStream = createReadStream(oldPath);
         const outputStream = createWriteStream(newPath);
@@ -16,36 +16,14 @@ const compress = async (args, config) => {
         inputStream.on('error', () => reject('Operation failed'));
         outputStream.on('error', () => reject('Operation failed'));
 
-        const brotli = zlib.createBrotliCompress();
-
-        const stream = inputStream.pipe(brotli).pipe(outputStream);
+        const stream = inputStream.pipe(callback()).pipe(outputStream);
 
         stream.on('finish', () => resolve('compress'));
         stream.on('error', () => reject('Operation failed'));
     })
 }
-const decompress = async (args, config) => {
-    if (!args[0] || !args[1]) throw 'Invalid input';
 
-    return new Promise((resolve, reject) => {
-
-        const oldPath = config.dir + path.sep + args[0];
-        const newPath = config.dir + path.sep + args[1];
-
-        const inputStream = createReadStream(oldPath);
-        const outputStream = createWriteStream(newPath);
-
-        inputStream.on('error', () => reject('Operation failed'));
-        outputStream.on('error', () => reject('Operation failed'));
-
-        const brotli = zlib.createBrotliDecompress();
-
-        const stream = inputStream.pipe(brotli).pipe(outputStream);
-
-        stream.on('finish', () => resolve('decompress'));
-        stream.on('error', () => reject('Operation failed'));
-    })
-}
-
+const compress = async (args, config) => operation(args, config, zlib.createBrotliCompress);
+const decompress = async (args, config) => operation(args, config, zlib.createBrotliDecompress);
 
 export default {compress, decompress};

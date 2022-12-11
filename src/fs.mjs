@@ -29,7 +29,6 @@ const cd = ([newPath, _], config) => {
 const ls = (_, config) => {
     return fs.readdir(config.dir, {withFileTypes: true})
         .then((files) => {
-            // files = files.sort((a, b) => a.isDirectory() === b.isDirectory());
             let table = [];
 
             files.forEach(file => {
@@ -49,7 +48,7 @@ const cat = (args, config) => {
     return new Promise((resolve, reject) => {
         let data = '';
 
-        const stream = createReadStream(config.dir + path.sep + args[0]);
+        const stream = createReadStream(path.join(config.dir, args[0]));
 
         stream.on('data', (buff) => {
             data += buff;
@@ -69,7 +68,7 @@ const cat = (args, config) => {
 const add = async (args, config) => {
     if (!args[0]) throw('Invalid input');
 
-    const filename = config.dir + path.sep + args[0];
+    const filename = path.join(config.dir, args[0]);
 
     return await fs.open(filename, 'a')
         .then(async (handle) => {
@@ -82,8 +81,8 @@ const add = async (args, config) => {
 const rn = async (args, config) => {
     if (!args[0] || !args[1]) throw('Invalid input');
 
-    const oldPath = config.dir + path.sep + args[0];
-    const newPath = config.dir + path.sep + args[1];
+    const oldPath = path.join(config.dir, args[0]);
+    const newPath = path.join(config.dir, args[1]);
 
     return fs.rename(oldPath, newPath).then(() => '').catch(() => 'Operation failed');
 }
@@ -92,8 +91,8 @@ const cp = async (args, config) => {
     if (!args[0] || !args[1]) throw('Invalid input');
 
     return new Promise((resolve, reject) => {
-        const oldPath = config.dir + path.sep + args[0];
-        const newPath = config.dir + path.sep + args[1];
+        const oldPath = path.join(config.dir, args[0]);
+        const newPath = path.join(config.dir, args[1]);
 
         const inputStream = createReadStream(oldPath);
         const outputStream = createWriteStream(newPath);
@@ -115,7 +114,7 @@ const cp = async (args, config) => {
 const mv = async (args, config) => new Promise(async (resolve, reject) => {
     await cp(args, config)
         .then(async () => {
-            await fs.unlink(config.dir + path.sep + args[0]);
+            await fs.unlink(path.join(config.dir, args[0]));
             resolve('mv!');
         })
         .catch((err) => reject(err))
@@ -124,7 +123,7 @@ const mv = async (args, config) => new Promise(async (resolve, reject) => {
 const rm = async (args, config) => {
     if (!args[0]) throw('Invalid input');
 
-    const fileName = config.dir + path.sep + args[0];
+    const fileName = path.join(config.dir, args[0]);
 
     return fs.unlink(fileName).then(() => 'Delete!').catch(() => 'Operation failed');
 }

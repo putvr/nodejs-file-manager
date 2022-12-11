@@ -1,11 +1,11 @@
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
-import {sep} from "node:path";
+import path from "node:path";
 
 const hash = async ([file, _], config) => {
     if (!file) throw ('Invalid input');
 
-    const filePath = config.dir + sep + file;
+    const filePath = path.join(config.dir, file);
 
     return readFile(filePath)
         .then(data => {
