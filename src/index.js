@@ -3,10 +3,11 @@ import {init} from './init.mjs';
 import fs from './fs.mjs';
 import * as os from './os.mjs' ;
 import hash from "./hash.mjs";
+import arc from './arc.mjs';
 
 const DEBUG = false; // TODO: !!!!
 
-const commands = {...fs, ...os, ...hash};
+const commands = {...fs, ...os, ...hash, ...arc};
 const config = {...init(process.argv), commands};
 
 process.stdin.on('data', async (chunk) => {
