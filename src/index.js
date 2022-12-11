@@ -1,28 +1,24 @@
-import {Transform} from 'node:stream';
-import {init, parse, execute, exit} from "./utils.mjs";
+import {parse, execute, exit} from "./utils.mjs";
+import {init} from './init.mjs';
+import fs from './fs.mjs';
 
-const config = {
-    username: '123',
-    dir: '123',
-    prompt: 'PROMPT: > '
-}
+const DEBUG = true; // TODO: !!!!
 
-init(config);
+const commands = {...fs};
+const config = {...init(process.argv), commands};
 
-const myTransform = new Transform({
-    transform(chunk, encoding, callback) {
+process.stdin.on('data', async (chunk) => {
+    const data = await parse(chunk);
 
-        console.log(config.prompt);
-
-        const data = parse(chunk);
-
-        const result = execute(data);
-
-        callback(null, `chunk: ${result}`);
-    },
+    execute(data, config)
+        .then((res) => {
+            if (DEBUG) process.stdout.write(`DEBUG :${String(res)}\n`);
+            process.stdout.write(`${config.dir} ${config.prompt}`);
+        }).catch((err) => {
+            process.stdout.write(`${err}\n${config.dir} ${config.prompt}`)
+        }
+    )
 });
-// main loop
-process.stdin.pipe(myTransform).pipe(process.stdout);
 
 process.on('SIGINT', () => {
     exit(config.username);
