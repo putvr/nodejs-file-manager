@@ -6,7 +6,8 @@ export const execute = async ([cmd, ...args], config) => {
     const cmdExecutor = config.commands[cmd];
     //console.log(config, cmd, cmdExecutor);
     if (!cmdExecutor) {
-        return ('Invalid input');
+        console.log('Invalid input');
+        return;
     }
 
     return await cmdExecutor(args, config);
